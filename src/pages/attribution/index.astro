@@ -28,7 +28,7 @@ const evidence = [
       <div><p class="eyebrow">THE CLAIM ON THE LABEL</p><h2>River after rain</h2><p>“Attributed to Tang Yin.”</p><p>An imagined ink landscape arrives with an attribution, a seal and an incomplete file. You have been asked to write a cautious catalogue note.</p><p><strong>Your task:</strong> decide what the available evidence permits you to say—and what it leaves unresolved.</p></div>
     </div>
     <noscript><p>This exercise needs JavaScript to reveal evidence and create your record. Please enable it and reload.</p></noscript>
-    <form id="case-form">
+    <form id="case-form" novalidate>
       <section id="first-step" aria-labelledby="first-title">
         <p class="eyebrow">STEP 1 / YOUR FIRST IMPRESSION</p><h2 id="first-title">Who made it?</h2>
         <p>You have only the label and schematic picture. “Insufficient evidence” is a valid starting point.</p>
@@ -63,8 +63,19 @@ const evidence = [
   const value = (id: string) => element<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(id).value;
   const reveal = (id: string) => { element(id).hidden = false; };
   const enable = (root: HTMLElement) => root.querySelectorAll<HTMLSelectElement | HTMLTextAreaElement>('select, textarea').forEach(input => input.disabled = false);
-  const validate = (ids: string[]) => ids.every(id => { const input = element<HTMLSelectElement | HTMLTextAreaElement>(id); if (input instanceof HTMLTextAreaElement) input.value = input.value.trim(); return input.reportValidity(); });
+  const validate = (ids: string[]) => ids.every(id => {
+    const input = element<HTMLSelectElement | HTMLTextAreaElement>(id);
+    if (input instanceof HTMLTextAreaElement) input.value = input.value.trim();
+    input.setCustomValidity(input.value ? '' : input instanceof HTMLSelectElement
+      ? 'Please choose an option.'
+      : 'Please fill out this field.');
+    return input.reportValidity();
+  });
   let recordText = "";
+  element('case-form').querySelectorAll<HTMLSelectElement | HTMLTextAreaElement>('select, textarea').forEach(input => {
+    input.addEventListener('input', () => input.setCustomValidity(''));
+    input.addEventListener('change', () => input.setCustomValidity(''));
+  });
   for (const stage of ['initial', 'final']) element(`${stage}-confidence`).addEventListener('input', () => element(`${stage}-value`).textContent = value(`${stage}-confidence`));
   element('start').addEventListener('click', () => {
     if (!validate(['initial-verdict'])) return;
