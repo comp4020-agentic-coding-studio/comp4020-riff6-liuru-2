@@ -18,6 +18,14 @@ import { sessionLabels, siteConfig } from "../site-config";
     {courseMeta.tags.map((tag) => <li>{tag}</li>)}
   </ul>
 
+  <aside class="case-invitation">
+    <p class="eyebrow">THE ATTRIBUTION DESK · A FIVE-MINUTE EXERCISE</p>
+    <h2>A signature is a claim. Would you believe it?</h2>
+    <p>One painting. Three pieces of evidence. Make a first judgment, open the case file, and see what changes your mind.</p>
+    <a href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/attribution/`}>Open the case file →</a>
+    <p><small>A clearly labelled fictional teaching case. No art-history knowledge needed.</small></p>
+  </aside>
+
   <h2>What you will do</h2>
   <p>
     Most of what survives from the Ming painter Tang Yin is not by Tang Yin.
@@ -65,6 +73,10 @@ import { sessionLabels, siteConfig } from "../site-config";
 </ContentLayout>
 
 <style>
+  .case-invitation { border: 1px solid var(--at-text-secondary); border-left: 5px solid currentColor; padding: clamp(1.2rem, 4vw, 2rem); margin-bottom: 3rem; background: var(--at-bg-alt); }
+  .case-invitation h2 { margin-top: .5rem; }
+  .case-invitation a { font-weight: 700; font-size: 1.15rem; }
+  .eyebrow { font-size: .75rem; letter-spacing: .1em; font-weight: 700; }
   .course-tags {
     display: flex;
     flex-wrap: wrap;

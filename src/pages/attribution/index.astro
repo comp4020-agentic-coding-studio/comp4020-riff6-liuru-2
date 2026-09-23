@@ -1,0 +1,137 @@
+---
+import ContentLayout from "astro-theme-university/layouts/ContentLayout.astro";
+import { siteConfig } from "../../site-config";
+const choices = ["Tang Yin himself", "His workshop", "A later imitation", "Insufficient evidence"];
+const evidence = [
+  { title: "The brushwork", label: "01 / LOOK CLOSELY", text: "In this fictional case, a comparison sheet shows similar branching rhythms in the painting and the reference works. Several outlines, however, appear hesitant and repeatedly traced.", limit: "A shared visual vocabulary can be learned or copied. Similarity alone does not identify a hand.", question: "Does resemblance support your first judgment, or could another maker explain it?" },
+  { title: "The seal", label: "02 / QUESTION THE MARK", text: "The invented examiner’s report finds a close match between the seal here and a seal in the reference packet. The same small break in its border appears on both impressions.", limit: "This exercise does not establish who possessed the seal, whether it was copied, or when this impression was added.", question: "Does a matching mark identify the painter, or only raise another question?" },
+  { title: "The paper", label: "03 / WEIGH THE CONTRADICTION", text: "The simulated lab report dates a sample to well after the claimed artist’s lifetime. But its location is recorded only as ‘lower edge’: the file does not establish whether it came from the painted sheet or a later mounting repair.", limit: "A later repair would not date the original painting. A later painted sheet would seriously challenge the attribution.", question: "How much weight can you put on a result when the sample’s origin is uncertain?" },
+];
+---
+<ContentLayout title="The attribution desk" description="One painting. Three pieces of evidence. A judgment you can revise." {...siteConfig}>
+  <div class="desk">
+    <p class="notice"><strong>Fictional teaching case.</strong> The picture is a schematic illustration; the title, reports and comparisons are invented for this exercise. They make no claims about any real artwork. There is no hidden correct attribution.</p>
+    <div class="case-heading"><span>CASE FILE / 001</span><span>ABOUT 5 MINUTES</span></div>
+    <div class="object-grid">
+      <figure>
+        <svg viewBox="0 0 600 400" role="img" aria-labelledby="painting-title painting-desc">
+          <title id="painting-title">Schematic landscape for the fictional case</title>
+          <desc id="painting-desc">Layered mountain outlines, a winding river, a tree and a red square standing in for a seal. This is an illustration, not a reproduction.</desc>
+          <rect width="600" height="400" fill="#eee5d1" />
+          <path d="M20 270 115 115 170 185 245 65 340 215 430 100 580 280" fill="#c3c3af" opacity=".6" />
+          <g fill="none" stroke="#454c43" stroke-linecap="round"><path d="M25 280 115 130 155 214 244 80 330 236 432 120 577 290" stroke-width="4"/><path d="m197 186 47-106 18 117m136-32 34-45 30 88M76 230l39-100 12 77" stroke-width="2"/><path d="M280 220q-85 25 10 60t-90 110m116-159q-53 19 13 44t-32 104" stroke-width="3"/><path d="m93 349 9-125m-5 53-34-38m37 13 39-34m-40 81-44-19" stroke-width="6"/></g>
+          <g fill="#454c43" opacity=".85"><ellipse cx="62" cy="235" rx="34" ry="10"/><ellipse cx="130" cy="216" rx="38" ry="11"/><ellipse cx="58" cy="277" rx="30" ry="9"/></g>
+          <rect x="516" y="308" width="32" height="32" fill="none" stroke="#944536" stroke-width="4"/><path d="M523 315h18v18h-9v-18m-9 10h18" fill="none" stroke="#944536" stroke-width="3"/>
+        </svg>
+        <figcaption>Illustration only · not a historical reproduction</figcaption>
+      </figure>
+      <div><p class="eyebrow">THE CLAIM ON THE LABEL</p><h2>River after rain</h2><p>“Attributed to Tang Yin.”</p><p>An imagined ink landscape arrives with an attribution, a seal and an incomplete file. You have been asked to write a cautious catalogue note.</p><p><strong>Your task:</strong> decide what the available evidence permits you to say—and what it leaves unresolved.</p></div>
+    </div>
+    <noscript><p>This exercise needs JavaScript to reveal evidence and create your record. Please enable it and reload.</p></noscript>
+    <form id="case-form">
+      <section id="first-step" aria-labelledby="first-title">
+        <p class="eyebrow">STEP 1 / YOUR FIRST IMPRESSION</p><h2 id="first-title">Who made it?</h2>
+        <p>You have only the label and schematic picture. “Insufficient evidence” is a valid starting point.</p>
+        <label for="initial-verdict">Initial judgment</label><select id="initial-verdict" required><option value="">Choose a judgment</option>{choices.map(choice => <option>{choice}</option>)}</select>
+        <label for="initial-confidence">Confidence in this judgment: <output id="initial-value">50</output>%</label><input id="initial-confidence" type="range" min="0" max="100" step="5" value="50" />
+        <p class="hint">This is your self-reported confidence, not a calculated probability of authenticity.</p>
+        <button id="start" type="button">Record first impression & open evidence →</button>
+      </section>
+      <section id="evidence-step" hidden aria-labelledby="evidence-title">
+        <p class="eyebrow">STEP 2 / EXAMINE THE FILE</p><h2 id="evidence-title" tabindex="-1">What changes your mind?</h2>
+        <p id="progress" role="status">0 of 3 evidence cards opened</p>
+        {evidence.map((item, index) => <article class="evidence-card" hidden={index > 0} data-card={index}>
+          <p class="eyebrow">{item.label}</p><h3>{item.title}</h3><p>{item.text}</p><p class="limit"><strong>What this cannot establish:</strong> {item.limit}</p>
+          <label for={`weight-${index}`}>Effect on your initial judgment</label><select id={`weight-${index}`} required disabled><option value="">Choose an interpretation</option><option>Supports it</option><option>Challenges it</option><option>Inconclusive</option></select>
+          <label for={`reason-${index}`}>{item.question}</label><textarea id={`reason-${index}`} rows="2" maxlength="600" required disabled placeholder="Give one reason tied to this evidence." />
+          <button type="button" data-next={index}>{index < 2 ? "Save note & open next evidence →" : "Save note & make a final judgment →"}</button>
+        </article>)}
+      </section>
+      <section id="final-step" hidden aria-labelledby="final-title"><p class="eyebrow">STEP 3 / YOUR CATALOGUE NOTE</p><h2 id="final-title" tabindex="-1">Where do you stand now?</h2>
+        <label for="final-verdict">Final judgment</label><select id="final-verdict" required disabled><option value="">Choose a judgment</option>{choices.map(choice => <option>{choice}</option>)}</select>
+        <label for="final-confidence">Confidence in this judgment: <output id="final-value">50</output>%</label><input id="final-confidence" type="range" min="0" max="100" step="5" value="50" />
+        <label for="change-evidence">What new evidence would change your judgment?</label><textarea id="change-evidence" rows="3" maxlength="1000" required disabled placeholder="For example: confirmation of exactly where the paper sample was taken." />
+        <button type="submit">Create my attribution record</button>
+      </section>
+    </form>
+    <section id="record" hidden aria-labelledby="record-title"><p class="eyebrow">CASE FILE / YOUR RECORD</p><h2 id="record-title" tabindex="-1">A judgment, with its limits attached.</h2><div id="comparison" class="comparison"></div><div id="notes"></div><p class="limit">There is no answer key: the learning is in how you handle conflicting and incomplete evidence. Lower confidence can reflect better reasoning.</p><p class="hint">Your responses stay in this page’s memory and are cleared on reload. Download a copy to keep them.</p><button id="download" type="button">Download record (.txt)</button> <button id="restart" class="secondary" type="button">Start a fresh case</button><p><a href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/assessments/dossier/`}>Take this method into the dossier assignment →</a></p></section>
+  </div>
+</ContentLayout>
+
+<script>
+  const element = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const value = (id: string) => element<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(id).value;
+  const reveal = (id: string) => { element(id).hidden = false; };
+  const enable = (root: HTMLElement) => root.querySelectorAll<HTMLSelectElement | HTMLTextAreaElement>('select, textarea').forEach(input => input.disabled = false);
+  const validate = (ids: string[]) => ids.every(id => { const input = element<HTMLSelectElement | HTMLTextAreaElement>(id); if (input instanceof HTMLTextAreaElement) input.value = input.value.trim(); return input.reportValidity(); });
+  let recordText = "";
+  for (const stage of ['initial', 'final']) element(`${stage}-confidence`).addEventListener('input', () => element(`${stage}-value`).textContent = value(`${stage}-confidence`));
+  element('start').addEventListener('click', () => {
+    if (!validate(['initial-verdict'])) return;
+    element<HTMLSelectElement>('initial-verdict').disabled = true;
+    element<HTMLInputElement>('initial-confidence').disabled = true;
+    element('start').hidden = true;
+    reveal('evidence-step');
+    enable(document.querySelector<HTMLElement>('[data-card="0"]')!);
+    element('progress').textContent = '1 of 3 evidence cards opened';
+    element('evidence-title').focus();
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-next]').forEach(button => button.addEventListener('click', () => {
+    const index = Number(button.dataset.next);
+    if (!validate([`weight-${index}`, `reason-${index}`])) return;
+    button.hidden = true;
+    if (index < 2) {
+      const card = document.querySelector<HTMLElement>(`[data-card="${index + 1}"]`)!;
+      card.hidden = false; enable(card);
+      element('progress').textContent = `${index + 2} of 3 evidence cards opened`;
+      element(`weight-${index + 1}`).focus();
+    } else { reveal('final-step'); enable(element('final-step')); element('final-title').focus(); }
+  }));
+  element<HTMLFormElement>('case-form').addEventListener('submit', event => {
+    event.preventDefault();
+    if (element('final-step').hidden || !validate(['final-verdict', 'change-evidence', 'reason-0', 'reason-1', 'reason-2'])) return;
+    const before = `${value('initial-verdict')} · ${value('initial-confidence')}% confidence`;
+    const after = `${value('final-verdict')} · ${value('final-confidence')}% confidence`;
+    const comparison = element('comparison'); comparison.replaceChildren();
+    for (const [label, text] of [['First impression', before], ['After three pieces of evidence', after]]) {
+      const box = document.createElement('div'); const heading = document.createElement('h3'); heading.textContent = label; const body = document.createElement('p'); body.textContent = text; box.append(heading, body); comparison.append(box);
+    }
+    const notes = element('notes'); notes.replaceChildren();
+    const lines = ['THE ATTRIBUTION DESK — CASE 001', 'Fictional teaching case. No claims about a real artwork.', '', `Initial judgment: ${before}`, `Final judgment: ${after}`, 'Confidence is self-reported, not a calculated authenticity probability.', ''];
+    ['The brushwork', 'The seal', 'The paper', 'What would change my mind'].forEach((title, index) => {
+      const heading = document.createElement('h3'); heading.textContent = title;
+      const body = document.createElement('p'); body.textContent = index < 3 ? `${value(`weight-${index}`)}: ${value(`reason-${index}`)}` : value('change-evidence');
+      notes.append(heading, body); lines.push(title, body.textContent, '');
+    });
+    recordText = lines.join('\n'); element('case-form').hidden = true; reveal('record'); element('record-title').focus();
+  });
+  element('download').addEventListener('click', () => {
+    const url = URL.createObjectURL(new Blob([recordText], { type: 'text/plain;charset=utf-8' }));
+    const link = document.createElement('a'); link.href = url; link.download = 'attribution-case-001.txt'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+  element('restart').addEventListener('click', () => window.location.reload());
+</script>
+
+<style>
+  .desk { max-width: 960px; margin-inline: auto; }
+  .notice, .limit { padding: 1rem 1.25rem; border-left: 3px solid currentColor; background: var(--at-bg-alt); }
+  .notice { font-size: .9rem; }
+  .case-heading { display: flex; justify-content: space-between; gap: 1rem; border-block: 1px solid var(--at-text-secondary); padding: .8rem 0; margin-top: 2rem; font-size: .75rem; letter-spacing: .08em; }
+  .object-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: center; margin: 2rem 0; }
+  figure { margin: 0; } svg { display: block; width: 100%; height: auto; } figcaption, .hint { font-size: .85rem; color: var(--at-text-secondary); }
+  figcaption { margin-top: .6rem; } .eyebrow { font-size: .75rem; font-weight: 700; letter-spacing: .09em; }
+  section { border-top: 1px solid var(--at-text-secondary); padding-block: 2rem; } h2 { margin-top: .5rem; }
+  label { display: block; font-weight: 650; margin: 1.2rem 0 .5rem; }
+  select, textarea { width: 100%; max-width: 100%; box-sizing: border-box; padding: .85rem; font: inherit; color: var(--at-text); background: var(--at-bg); border: 1px solid var(--at-text-secondary); border-radius: 4px; }
+  textarea { resize: vertical; } input[type=range] { width: 100%; max-width: 420px; min-height: 32px; }
+  button { padding: .85rem 1.1rem; margin-top: 1rem; border: 1px solid currentColor; border-radius: 4px; font: inherit; font-weight: 700; background: var(--at-text, #242424); color: var(--at-bg, #fff); cursor: pointer; }
+  button.secondary { color: var(--at-text); background: var(--at-bg-alt); }
+  :is(button, select, textarea, input, a):focus-visible { outline: 3px solid #a44b26; outline-offset: 4px; }
+  .evidence-card { padding: clamp(1rem, 4vw, 2rem); margin-top: 1.5rem; border: 1px solid var(--at-text-secondary); border-radius: 4px; }
+  .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .comparison :global(> div) { background: var(--at-bg-alt); padding: 1.25rem; border-top: 3px solid currentColor; }
+  #notes { overflow-wrap: anywhere; white-space: pre-wrap; }
+  [hidden] { display: none !important; }
+  @media (max-width: 640px) { .object-grid, .comparison { grid-template-columns: 1fr; } .object-grid { gap: 1rem; } button { width: 100%; } }
+</style>
+
